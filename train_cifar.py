@@ -13,5 +13,5 @@ x_test = x_test.astype('float')/127.5 - 1
 
 model = CIFARModel()
 
-model.compile(optimizer=tfk.optimizers.Adam(learning_rate=5e-5), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+model.compile(optimizer=tfk.optimizers.Adam(learning_rate=1e-4), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 model.fit(x_train, y_train, batch_size=200, epochs=20, validation_data=(x_test, y_test))
