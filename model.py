@@ -55,9 +55,17 @@ class MNISTModel(tfk.Model):
 class CIFARModel(tfk.Model):
     def __init__(self):
         super().__init__()
+        self.preprocessing = tfk.models.Sequential([tfkl.experimental.preprocessing.RandomFlip("horizontal"),
+        tfkl.experimental.preprocessing.RandomCrop(28,28),
+        tfkl.experimental.preprocessing.Resizing(32,32)])
         self.conv1 = DepthwiseSeperableConv2D(256, 3)
         self.conv2 = DepthwiseSeperableConv2D(512, 3)
         self.conv3 = DepthwiseSeperableConv2D(256, 3)
+
+        self.dropout1 = tfkl.Dropout(0.3)
+        self.dropout2 = tfkl.Dropout(0.3)
+        self.dropout3 = tfkl.Dropout(0.3)
+        self.dropout4 = tfkl.Dropout(0.5)
         # self.conv4 = DepthwiseSeperableConv2D(128, 3)
 
         self.flatten = tfkl.Flatten()
@@ -66,13 +74,18 @@ class CIFARModel(tfk.Model):
         self.dense2 = tfkl.Dense(10, activation="softmax")
 
     def call(self, x):
-        y = self.conv1(x)
+        y = self.preprocessing(x)
+        y = self.conv1(y)
+        # y = self.dropout1(y)
         y = self.conv2(y)
+        # y = self.dropout2(y)
         y = self.conv3(y)
+        # y = self.dropout3(y)
         # y = self.conv4(y)
 
         y = self.flatten(y)
         y = self.dense1(y)
+        y = self.dropout4(y)
         # y = self.bn(y)
         y = self.dense2(y)
         return y
